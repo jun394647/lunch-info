@@ -195,41 +195,6 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-    .stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        margin: 0.5rem 0;
-    }
-    .board-post {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 1rem;
-        margin: 0.8rem 0;
-        transition: box-shadow 0.2s;
-    }
-    .board-post:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    /* 버튼 스타일 개선 */
-    .stButton>button {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    /* 날짜 선택기 스타일 */
-    .stDateInput>div>div>input {
-        border-radius: 8px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
 
 class WelplusAPI:
