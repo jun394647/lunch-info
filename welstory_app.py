@@ -8,7 +8,7 @@ from pathlib import Path
 
 # 페이지 설정
 st.set_page_config(
-    page_title="웰스토리 메뉴 보드",
+    page_title="BOB SSAFY",
     page_icon="🍽️",
     layout="wide",
     initial_sidebar_state="expanded"  # 사이드바 기본 열림
@@ -554,8 +554,8 @@ def display_menu_card(menu_item, show_voting=True):
 
 
 def show_menu_page():
-    """메뉴 페이지"""
-    st.markdown('<p class="main-header">🍽️ 오늘의 점심 메뉴</p>', unsafe_allow_html=True)
+    """BOB SSAFY"""
+    st.markdown('<p class="main-header">🍽️ BOB SSAFY 점심 메뉴</p>', unsafe_allow_html=True)
 
     # API 연결 확인
     if 'api' not in st.session_state or st.session_state.api is None:
