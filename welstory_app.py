@@ -240,6 +240,19 @@ class WelplusAPI:
 
 
 # 데이터 저장/로드 함수들
+def get_welstory_credentials():
+    """웰스토리 계정 정보 가져오기 (Streamlit Secrets에서)"""
+    try:
+        if hasattr(st, 'secrets') and 'welstory' in st.secrets:
+            return {
+                'username': st.secrets['welstory']['username'],
+                'password': st.secrets['welstory']['password']
+            }
+    except Exception as e:
+        st.error(f"Secrets 로드 실패: {str(e)}")
+    
+    return {}
+
 def load_votes():
     """투표 데이터 로드"""
     vote_file = DATA_DIR / "votes.json"
@@ -336,6 +349,19 @@ def show_menu_page():
     """메뉴 페이지"""
     st.markdown('<p class="main-header">🍽️ 오늘의 점심 메뉴</p>', unsafe_allow_html=True)
     
+    # API 연결 확인
+    if 'api' not in st.session_state or st.session_state.api is None:
+        st.warning("⚠️ 웰스토리 API에 연결되지 않았습니다.")
+        st.info("📝 `.streamlit/secrets.toml` 파일에 웰스토리 계정 정보를 설정하세요.")
+        
+        st.code("""[welstory]
+username = "your_username"
+password = "your_password"
+""", language="toml")
+        
+        st.markdown("자세한 내용은 사이드바 하단의 '🔧 설정 필요'를 참고하세요.")
+        return
+    
     # 날짜 선택
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
@@ -346,10 +372,6 @@ def show_menu_page():
         )
     
     # 메뉴 로드
-    if 'api' not in st.session_state or st.session_state.api is None:
-        st.warning("로그인이 필요합니다. 사이드바에서 로그인하세요.")
-        return
-    
     try:
         with st.spinner("메뉴를 불러오는 중..."):
             menu_date = datetime.combine(selected_date, datetime.min.time())
@@ -578,44 +600,56 @@ def show_stats_page():
 
 
 def main():
-    # 사이드바 - 로그인
+    # 계정 정보 가져오기 (Streamlit Secrets에서)
+    credentials = get_welstory_credentials()
+    
+    # 세션 상태 초기화
+    if 'api' not in st.session_state:
+        st.session_state.api = None
+        st.session_state.logged_in = False
+    
+    # 자동 로그인 (페이지 로드 시 한 번만)
+    if not st.session_state.logged_in and credentials.get('username') and credentials.get('password'):
+        try:
+            with st.spinner("메뉴 정보를 불러오는 중..."):
+                api = WelplusAPI()
+                if api.login(credentials['username'], credentials['password']):
+                    st.session_state.api = api
+                    st.session_state.logged_in = True
+        except Exception as e:
+            st.error(f"API 연결 실패: {str(e)}")
+    
+    # 사이드바
     with st.sidebar:
-        st.markdown("## 🔐 로그인")
-        
-        if 'api' not in st.session_state:
-            st.session_state.api = None
-            st.session_state.logged_in = False
-        
-        if not st.session_state.logged_in:
-            username = st.text_input("아이디", value="웰스토리_아이디")
-            password = st.text_input("비밀번호", type="password", value="웰스토리_비번")
-            
-            if st.button("로그인", use_container_width=True):
-                with st.spinner("로그인 중..."):
-                    api = WelplusAPI()
-                    if api.login(username, password):
-                        st.session_state.api = api
-                        st.session_state.logged_in = True
-                        st.success("로그인 성공!")
-                        st.rerun()
-                    else:
-                        st.error("로그인 실패. 아이디와 비밀번호를 확인하세요.")
-        else:
-            st.success("✅ 로그인됨")
-            if st.button("로그아웃", use_container_width=True):
-                st.session_state.api = None
-                st.session_state.logged_in = False
-                st.rerun()
-        
+        st.markdown("## 🍽️ 웰스토리 메뉴 보드")
         st.markdown("---")
         
         # 메뉴 선택
-        st.markdown("## 📱 메뉴")
         page = st.radio(
             "페이지 선택",
             ["🍽️ 오늘의 메뉴", "📋 자유 게시판", "📊 통계"],
             label_visibility="collapsed"
         )
+        
+        st.markdown("---")
+        
+        # API 연결 상태 (하단에 간단하게 표시)
+        if st.session_state.logged_in:
+            st.success("✅ 연결됨")
+        else:
+            st.error("❌ 연결 안됨")
+            with st.expander("🔧 설정 필요"):
+                st.markdown("""
+                **Streamlit Secrets 설정:**
+                
+                `.streamlit/secrets.toml` 파일에 계정 정보를 추가하세요:
+                
+                ```toml
+                [welstory]
+                username = "your_username"
+                password = "your_password"
+                ```
+                """)
     
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
