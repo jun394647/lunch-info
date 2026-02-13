@@ -592,11 +592,17 @@ password = "your_password"
         regular_menus = [m for m in menu_data["점심"] if "[라면" not in m.get("메뉴명", "")]
         ramen_menus = [m for m in menu_data["점심"] if "[라면" in m.get("메뉴명", "")]
         
-        # 일반 메뉴 1열로 표시
+        # 일반 메뉴 한 줄에 모두 표시
         if regular_menus:
             st.markdown("### 🍱 메인 메뉴")
-            for menu in regular_menus:
-                display_menu_card(menu)
+            
+            # 메뉴 개수만큼 컬럼 생성 (최대 4개)
+            num_cols = min(len(regular_menus), 4)
+            cols = st.columns(num_cols)
+            
+            for idx, menu in enumerate(regular_menus):
+                with cols[idx % num_cols]:
+                    display_menu_card(menu)
         
         # 라면 메뉴
         if ramen_menus:
