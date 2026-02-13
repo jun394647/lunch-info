@@ -493,14 +493,14 @@ def display_menu_card(menu_item, show_voting=True):
                 col1, col2 = st.columns(2)
 
                 with col1:
-                    if st.button(f"👍 좋아요 ({current_votes['좋아요']})", key=f"like_{menu_id}", use_container_width=True):
+                    if st.button(f"👍({current_votes['좋아요']})", key=f"like_{menu_id}", use_container_width=True):
                         current_votes['좋아요'] += 1
                         votes[menu_id] = current_votes
                         save_votes(votes)
                         st.rerun()
 
                 with col2:
-                    if st.button(f"👎 별로 ({current_votes['별로']})", key=f"dislike_{menu_id}", use_container_width=True):
+                    if st.button(f"👎({current_votes['별로']})", key=f"dislike_{menu_id}", use_container_width=True):
                         current_votes['별로'] += 1
                         votes[menu_id] = current_votes
                         save_votes(votes)
