@@ -89,8 +89,6 @@ st.markdown("""
     .menu-image {
         border-radius: 15px;
         width: 100%;
-        height: 450px;
-        width: 120%;
         height: 280px;
         object-fit: cover;
         box-shadow: 0 6px 15px rgba(0,0,0,0.15);
