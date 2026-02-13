@@ -663,7 +663,7 @@ password = "your_password"
 
 def show_board_page():
     """게시판 페이지"""
-    st.markdown('<p class="main-header">📋 자유 게시판</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">📋 BOB HUB</p>', unsafe_allow_html=True)
 
     posts = load_board_posts()
 
@@ -803,7 +803,7 @@ def show_stats_page():
     st.markdown("---")
 
     # 인기 메뉴 TOP 5
-    st.markdown("### 🏆 인기 메뉴 TOP 5")
+    st.markdown("### BOB SSAFY 🏆 인기 메뉴 TOP 5")
 
     menu_scores = []
     for menu_id, vote_data in votes.items():
@@ -863,7 +863,7 @@ def main():
     # 자동 로그인 (페이지 로드 시 한 번만)
     if not st.session_state.logged_in and credentials.get('username') and credentials.get('password'):
         try:
-            with st.spinner("메뉴 정보를 불러오는 중..."):
+            with st.spinner("BOB SSAFY 불러오는 중..."):
                 api = WelplusAPI()
                 if api.login(credentials['username'], credentials['password']):
                     st.session_state.api = api
@@ -906,7 +906,7 @@ def main():
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
         show_menu_page()
-    elif page == "📋 자유 게시판":
+    elif page == "📋 BOB HUB":
         show_board_page()
     elif page == "📊 통계":
         show_stats_page()
