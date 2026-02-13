@@ -873,7 +873,7 @@ def main():
 
     # 사이드바
     with st.sidebar:
-        st.markdown("## 🍽️ 웰스토리 메뉴 보드")
+        st.markdown("## 🍽️ BOB SSAFY 보드")
         st.markdown("---")
 
         # 메뉴 선택
