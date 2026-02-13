@@ -73,7 +73,7 @@ st.markdown("""
     }
     
     .menu-name {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 900;
         flex: 1;
         line-height: 1.3;
