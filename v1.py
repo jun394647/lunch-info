@@ -8,7 +8,7 @@ from pathlib import Path
 
 # 페이지 설정
 st.set_page_config(
-    page_title="웰스토리 메뉴 보드",
+    page_title="BOB SSAFY",
     page_icon="🍽️",
     layout="wide",
     initial_sidebar_state="expanded"  # 사이드바 기본 열림
@@ -493,14 +493,14 @@ def display_menu_card(menu_item, show_voting=True):
                 col1, col2 = st.columns(2)
 
                 with col1:
-                    if st.button(f"👍 좋아요 ({current_votes['좋아요']})", key=f"like_{menu_id}", use_container_width=True):
+                    if st.button(f"👍({current_votes['좋아요']})", key=f"like_{menu_id}", use_container_width=True):
                         current_votes['좋아요'] += 1
                         votes[menu_id] = current_votes
                         save_votes(votes)
                         st.rerun()
 
                 with col2:
-                    if st.button(f"👎 별로 ({current_votes['별로']})", key=f"dislike_{menu_id}", use_container_width=True):
+                    if st.button(f"👎({current_votes['별로']})", key=f"dislike_{menu_id}", use_container_width=True):
                         current_votes['별로'] += 1
                         votes[menu_id] = current_votes
                         save_votes(votes)
@@ -554,8 +554,8 @@ def display_menu_card(menu_item, show_voting=True):
 
 
 def show_menu_page():
-    """메뉴 페이지"""
-    st.markdown('<p class="main-header">🍽️ 오늘의 점심 메뉴</p>', unsafe_allow_html=True)
+    """BOB SSAFY"""
+    st.markdown('<p class="main-header">🍽️ BOB SSAFY 점심 메뉴</p>', unsafe_allow_html=True)
 
     # API 연결 확인
     if 'api' not in st.session_state or st.session_state.api is None:
@@ -663,7 +663,7 @@ password = "your_password"
 
 def show_board_page():
     """게시판 페이지"""
-    st.markdown('<p class="main-header">📋 자유 게시판</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">📋 BOB HUB</p>', unsafe_allow_html=True)
 
     posts = load_board_posts()
 
@@ -803,7 +803,7 @@ def show_stats_page():
     st.markdown("---")
 
     # 인기 메뉴 TOP 5
-    st.markdown("### 🏆 인기 메뉴 TOP 5")
+    st.markdown("### BOB SSAFY 🏆 인기 메뉴 TOP 5")
 
     menu_scores = []
     for menu_id, vote_data in votes.items():
@@ -863,7 +863,7 @@ def main():
     # 자동 로그인 (페이지 로드 시 한 번만)
     if not st.session_state.logged_in and credentials.get('username') and credentials.get('password'):
         try:
-            with st.spinner("메뉴 정보를 불러오는 중..."):
+            with st.spinner("BOB SSAFY 불러오는 중..."):
                 api = WelplusAPI()
                 if api.login(credentials['username'], credentials['password']):
                     st.session_state.api = api
@@ -873,13 +873,13 @@ def main():
 
     # 사이드바
     with st.sidebar:
-        st.markdown("## 🍽️ 웰스토리 메뉴 보드")
+        st.markdown("## 🍽️ BOB SSAFY 보드")
         st.markdown("---")
 
         # 메뉴 선택
         page = st.radio(
             "페이지 선택",
-            ["🍽️ 오늘의 메뉴", "📋 자유 게시판", "📊 통계"],
+            ["🍽️ 오늘의 메뉴", "📋 BOB HUB", "📊 통계"],
             label_visibility="collapsed"
         )
 
@@ -906,7 +906,7 @@ def main():
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
         show_menu_page()
-    elif page == "📋 자유 게시판":
+    elif page == "📋 BOB HUB":
         show_board_page()
     elif page == "📊 통계":
         show_stats_page()
