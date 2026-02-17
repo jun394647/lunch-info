@@ -11,7 +11,7 @@ st.set_page_config(
     page_title="BOB SSAFY",
     page_icon="🍽️",
     layout="wide",
-    initial_sidebar_state="expanded"  # 사이드바 기본 열림
+    initial_sidebar_state="expanded"
 )
 
 # 한국 시간대 설정
@@ -41,9 +41,13 @@ st.markdown("""
         border: 2px solid rgba(102, 126, 234, 0.3);
         border-radius: 20px;
         padding: 1.5rem;
-        margin: 1.5rem 0;
+        margin: 1rem 0;
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         transition: transform 0.3s, box-shadow 0.3s;
+        background: rgba(255, 255, 255, 0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     
     .menu-card:hover {
@@ -66,75 +70,104 @@ st.markdown("""
         color: white;
         padding: 0.5rem 1.2rem;
         border-radius: 25px;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: bold;
         display: inline-block;
         box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        white-space: nowrap;
     }
     
     .menu-name {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 900;
         flex: 1;
         line-height: 1.3;
     }
     
     .menu-content {
-        display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 2rem;
-        align-items: start;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .menu-image-container {
+        width: 100%;
+        height: 200px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     
     .menu-image {
-        border-radius: 15px;
         width: 100%;
-        height: 450px;
-        width: 120%;
-        height: 280px;
+        height: 100%;
         object-fit: cover;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
     
-    .menu-info-row {
+    .menu-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 1.1rem;
-        padding: 0.8rem;
-        background: rgba(102, 126, 234, 0.08);
+        justify-content: center;
+        color: #999;
+        font-size: 1rem;
+    }
+    
+    .menu-rating-small {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: linear-gradient(135deg, #FFD93D 0%, #FF6B35 100%);
+        color: white;
+        padding: 0.4rem 0.8rem;
         border-radius: 10px;
-        margin: 0.5rem 0;
+        font-size: 0.85rem;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+        margin-top: 0.5rem;
+    }
+    
+    .menu-rating-small .score {
+        font-size: 1rem;
+    }
+    
+    .menu-rating-small .count {
+        font-size: 0.75rem;
+        opacity: 0.9;
+    }
+    
+    .menu-calories {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-top: 0.8rem;
+        padding: 0.5rem;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 8px;
+        text-align: center;
     }
     
     .menu-ingredients {
-        font-size: 1rem;
-        line-height: 1.6;
+        font-size: 0.9rem;
+        line-height: 1.8;
         padding: 1rem;
         background: rgba(102, 126, 234, 0.05);
         border-radius: 10px;
         border-left: 4px solid #667eea;
-        margin: 1rem 0;
+        margin-top: 1rem;
+        flex: 1;
     }
     
-    .rating-section {
-        background: linear-gradient(135deg, #FFD93D 0%, #FF6B35 100%);
-        padding: 1.2rem;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
-        color: white;
+    .ingredient-item {
+        padding: 0.3rem 0;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
     }
     
-    .rating-score {
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin-bottom: 0.3rem;
-    }
-    
-    .rating-count {
-        font-size: 0.9rem;
-        opacity: 0.95;
+    .ingredient-item:last-child {
+        border-bottom: none;
     }
     
     .comment-box {
@@ -188,11 +221,8 @@ st.markdown("""
     
     /* 반응형 */
     @media (max-width: 768px) {
-        .menu-content {
-            grid-template-columns: 1fr;
-        }
         .menu-name {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
         }
     }
     </style>
@@ -438,123 +468,134 @@ def save_board_posts(posts):
 
 
 def display_menu_card(menu_item, show_voting=True):
-    """메뉴 카드 표시 (1열 레이아웃)"""
-    with st.container():
-        st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+    """메뉴 카드 표시 (개선된 레이아웃)"""
+    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
-        # 헤더: 코너 + 메뉴명
+    # 헤더: 코너 + 메뉴명
+    st.markdown(f"""
+    <div class="menu-header">
+        <div class="menu-corner">{menu_item['코너']}</div>
+        <div class="menu-name">{menu_item['메뉴명']}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 메인 콘텐츠 영역
+    st.markdown('<div class="menu-content">', unsafe_allow_html=True)
+
+    # 이미지
+    if menu_item.get("이미지"):
         st.markdown(f"""
-        <div class="menu-header">
-            <div class="menu-corner">{menu_item['코너']}</div>
-            <div class="menu-name">{menu_item['메뉴명']}</div>
+        <div class="menu-image-container">
+            <img src="{menu_item["이미지"]}" class="menu-image">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="menu-image-container">
+            <div class="menu-image-placeholder">이미지 없음</div>
         </div>
         """, unsafe_allow_html=True)
 
-        # 메인 콘텐츠: 이미지 + 정보
-        col_img, col_info = st.columns([1, 2])
+    # 평점 (작게)
+    if menu_item.get('평균평점', 0) > 0:
+        st.markdown(f"""
+        <div class="menu-rating-small">
+            <span class="score">⭐ {menu_item['평균평점']:.1f}</span>
+            <span class="count">({menu_item['참여자수']}명)</span>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="menu-rating-small">
+            <span class="score">⭐</span>
+            <span class="count">(평가 없음)</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-        with col_img:
-            if menu_item.get("이미지"):
-                st.markdown(f'<img src="{menu_item["이미지"]}" class="menu-image">', unsafe_allow_html=True)
-            else:
-                st.markdown('<div style="height: 280px; background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1.2rem;">이미지 없음</div>', unsafe_allow_html=True)
+    # 칼로리
+    st.markdown(f'<div class="menu-calories">🔥 {menu_item["칼로리"]}kcal</div>', unsafe_allow_html=True)
 
-        with col_info:
-            # 칼로리
-            st.markdown(f'<div class="menu-info-row">🔥 <strong>{menu_item["칼로리"]}kcal</strong></div>', unsafe_allow_html=True)
+    # 구성 (한 줄씩)
+    if menu_item['구성']:
+        ingredients_html = '<div class="menu-ingredients">📋 <strong>구성</strong><br>'
+        for ingredient in filter(None, menu_item['구성']):
+            ingredients_html += f'<div class="ingredient-item">• {ingredient}</div>'
+        ingredients_html += '</div>'
+        st.markdown(ingredients_html, unsafe_allow_html=True)
 
-            # 평점
-            if menu_item.get('평균평점', 0) > 0:
+    st.markdown('</div>', unsafe_allow_html=True)  # menu-content 종료
+
+    # 투표 버튼
+    if show_voting:
+        votes = load_votes()
+        menu_id = menu_item['menu_id']
+        current_votes = votes.get(menu_id, {"좋아요": 0, "별로": 0})
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if st.button(f"👍 {current_votes['좋아요']}", key=f"like_{menu_id}", use_container_width=True):
+                current_votes['좋아요'] += 1
+                votes[menu_id] = current_votes
+                save_votes(votes)
+                st.rerun()
+
+        with col2:
+            if st.button(f"👎 {current_votes['별로']}", key=f"dislike_{menu_id}", use_container_width=True):
+                current_votes['별로'] += 1
+                votes[menu_id] = current_votes
+                save_votes(votes)
+                st.rerun()
+
+    # 댓글 섹션
+    with st.expander("💬 댓글 보기/작성"):
+        comments = load_comments()
+        menu_id = menu_item['menu_id']
+        menu_comments = comments.get(menu_id, [])
+
+        # 댓글 표시
+        if menu_comments:
+            for comment in menu_comments:
                 st.markdown(f"""
-                <div class="rating-section">
-                    <div class="rating-score">⭐ {menu_item['평균평점']:.1f}</div>
-                    <div class="rating-count">{menu_item['참여자수']}명이 평가했어요</div>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div class="rating-section">
-                    <div class="rating-score">⭐</div>
-                    <div class="rating-count">아직 평가가 없어요</div>
-                </div>
-                """, unsafe_allow_html=True)
-
-            # 구성
-            if menu_item['구성']:
-                ingredients = ", ".join(filter(None, menu_item['구성']))
-                st.markdown(f'<div class="menu-ingredients">📋 {ingredients}</div>', unsafe_allow_html=True)
-
-            # 투표 버튼
-            if show_voting:
-                votes = load_votes()
-                menu_id = menu_item['menu_id']
-                current_votes = votes.get(menu_id, {"좋아요": 0, "별로": 0})
-
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    if st.button(f"👍({current_votes['좋아요']})", key=f"like_{menu_id}", use_container_width=True):
-                        current_votes['좋아요'] += 1
-                        votes[menu_id] = current_votes
-                        save_votes(votes)
-                        st.rerun()
-
-                with col2:
-                    if st.button(f"👎({current_votes['별로']})", key=f"dislike_{menu_id}", use_container_width=True):
-                        current_votes['별로'] += 1
-                        votes[menu_id] = current_votes
-                        save_votes(votes)
-                        st.rerun()
-
-        # 댓글 섹션
-        with st.expander("💬 댓글 보기/작성"):
-            comments = load_comments()
-            menu_id = menu_item['menu_id']
-            menu_comments = comments.get(menu_id, [])
-
-            # 댓글 표시
-            if menu_comments:
-                for comment in menu_comments:
-                    st.markdown(f"""
-                    <div class="comment-box">
-                        <div>
-                            <span class="comment-author">{comment['author']}</span>
-                            <span class="comment-time">· {comment['timestamp']}</span>
-                        </div>
-                        <div class="comment-text">{comment['text']}</div>
+                <div class="comment-box">
+                    <div>
+                        <span class="comment-author">{comment['author']}</span>
+                        <span style="color: #999; font-size: 0.85rem;">· {comment['timestamp']}</span>
                     </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.info("첫 댓글을 남겨보세요!")
+                    <div style="margin-top: 0.5rem;">{comment['text']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("첫 댓글을 남겨보세요!")
 
-            # 댓글 작성
-            with st.form(key=f"comment_{menu_id}"):
-                col1, col2 = st.columns([1, 3])
-                with col1:
-                    author = st.text_input("이름", key=f"author_{menu_id}", placeholder="익명")
-                with col2:
-                    comment_text = st.text_input("댓글", key=f"text_{menu_id}", placeholder="이 메뉴 어떠셨나요?")
+        # 댓글 작성
+        with st.form(key=f"comment_{menu_id}"):
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                author = st.text_input("이름", key=f"author_{menu_id}", placeholder="익명")
+            with col2:
+                comment_text = st.text_input("댓글", key=f"text_{menu_id}", placeholder="이 메뉴 어떠셨나요?")
 
-                submit = st.form_submit_button("작성", use_container_width=True)
+            submit = st.form_submit_button("작성", use_container_width=True)
 
-                if submit and comment_text:
-                    if menu_id not in comments:
-                        comments[menu_id] = []
+            if submit and comment_text:
+                if menu_id not in comments:
+                    comments[menu_id] = []
 
-                    comments[menu_id].append({
-                        "author": author if author else "익명",
-                        "text": comment_text,
-                        "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M")
-                    })
-                    save_comments(comments)
-                    st.success("댓글이 작성되었습니다!")
-                    st.rerun()
+                comments[menu_id].append({
+                    "author": author if author else "익명",
+                    "text": comment_text,
+                    "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+                })
+                save_comments(comments)
+                st.success("댓글이 작성되었습니다!")
+                st.rerun()
 
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
 
 def show_menu_page():
-    """BOB SSAFY"""
+    """BOB SSAFY 메뉴 페이지"""
     st.markdown('<p class="main-header">🍽️ BOB SSAFY 점심 메뉴</p>', unsafe_allow_html=True)
 
     # API 연결 확인
@@ -594,7 +635,7 @@ password = "your_password"
         regular_menus = [m for m in menu_data["점심"] if "[라면" not in m.get("메뉴명", "")]
         ramen_menus = [m for m in menu_data["점심"] if "[라면" in m.get("메뉴명", "")]
 
-        # 일반 메뉴 한 줄에 모두 표시
+        # 일반 메뉴 표시
         if regular_menus:
             st.markdown("### 🍱 메인 메뉴")
 
@@ -642,18 +683,34 @@ password = "your_password"
 
                 with col1:
                     if menu.get("이미지"):
-                        st.markdown(f'<img src="{menu["이미지"]}" class="menu-image">', unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="menu-image-container" style="height: 250px;">
+                            <img src="{menu["이미지"]}" class="menu-image">
+                        </div>
+                        """, unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="height: 280px; background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1.2rem;">이미지 없음</div>', unsafe_allow_html=True)
+                        st.markdown("""
+                        <div class="menu-image-container" style="height: 250px;">
+                            <div class="menu-image-placeholder">이미지 없음</div>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                 with col2:
                     if ramen_types:
-                        st.markdown('<div class="menu-info-row">🍜 <strong>라면 종류</strong></div>', unsafe_allow_html=True)
-                        st.markdown(f'<div class="menu-ingredients">{", ".join(ramen_types)}</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem;">🍜 라면 종류</div>', unsafe_allow_html=True)
+                        ingredients_html = '<div class="menu-ingredients">'
+                        for ramen in ramen_types:
+                            ingredients_html += f'<div class="ingredient-item">• {ramen}</div>'
+                        ingredients_html += '</div>'
+                        st.markdown(ingredients_html, unsafe_allow_html=True)
 
                     if toppings:
-                        st.markdown('<div class="menu-info-row">🥚 <strong>토핑</strong></div>', unsafe_allow_html=True)
-                        st.markdown(f'<div class="menu-ingredients">{", ".join(toppings)}</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
+                        toppings_html = '<div class="menu-ingredients">'
+                        for topping in toppings:
+                            toppings_html += f'<div class="ingredient-item">• {topping}</div>'
+                        toppings_html += '</div>'
+                        st.markdown(toppings_html, unsafe_allow_html=True)
 
                 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -803,7 +860,7 @@ def show_stats_page():
     st.markdown("---")
 
     # 인기 메뉴 TOP 5
-    st.markdown("### BOB SSAFY 🏆 인기 메뉴 TOP 5")
+    st.markdown("### 🏆 인기 메뉴 TOP 5")
 
     menu_scores = []
     for menu_id, vote_data in votes.items():
@@ -873,7 +930,7 @@ def main():
 
     # 사이드바
     with st.sidebar:
-        st.markdown("## 🍽️ BOB SSAFY 보드")
+        st.markdown("## 🍽️ BOB SSAFY")
         st.markdown("---")
 
         # 메뉴 선택
