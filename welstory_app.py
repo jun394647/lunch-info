@@ -607,16 +607,12 @@ password = "your_password"
     # 날짜 선택
     col1, col2 = st.columns([3, 1])
     with col1:
-        selected_date = st.date_input(
-            "📅 날짜 선택",
-            value=datetime.now(KST).date(),
-            max_value=datetime.now(KST).date() + timedelta(days=7)
-        )
+        selected_date = date
 
     # 메뉴 로드
     try:
         with st.spinner("메뉴를 불러오는 중..."):
-            menu_date = datetime.combine(selected_date, datetime.min.time())
+            menu_date = datetime.combine(selected_date, .min.time())
             menu_date = KST.localize(menu_date)
             menu_data = st.session_state.api.get_menu(date=menu_date)
 
