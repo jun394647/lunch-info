@@ -638,77 +638,64 @@ password = "your_password"
             cols = st.columns(num_cols)
             for idx, menu in enumerate(regular_menus):
                 with cols[idx % num_cols]:
-                    st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
-                    
-                    # 코너 + 메뉴명
-                    st.markdown(f"""
-                    <div style="
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 0.8rem;
-                        margin-bottom: 1rem;
-                        padding-bottom: 1rem;
-                        border-bottom: 2px solid rgba(102, 126, 234, 0.2);
-                    ">
-                        <div class="menu-corner">{menu['코너']}</div>
-                        <div style="
-                            font-size: 1.2rem;
-                            font-weight: 700;
-                            line-height: 1.3;
-                            text-align: center;
-                            color: #667eea;
-                        ">{menu['메뉴명']}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    # 메인 콘텐츠
-                    st.markdown('<div class="menu-content">', unsafe_allow_html=True)
-                    
-                    # 이미지
-                    if menu.get("이미지"):
-                        st.markdown(f"""
-                        <div class="menu-image-container">
-                            <img src="{menu["이미지"]}" class="menu-image">
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div class="menu-image-container">
-                            <div class="menu-image-placeholder">이미지 없음</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    # 평점
+                    # 평점 정보
                     if menu.get('평균평점', 0) > 0:
-                        st.markdown(f"""
-                        <div class="menu-rating-small">
-                            <span class="score">⭐ {menu['평균평점']:.1f}</span>
-                            <span class="count">({menu['참여자수']}명)</span>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        rating_html = f'<span class="score">⭐ {menu["평균평점"]:.1f}</span><span class="count">({menu["참여자수"]}명)</span>'
                     else:
-                        st.markdown("""
-                        <div class="menu-rating-small">
-                            <span class="score">⭐</span>
-                            <span class="count">(평가 없음)</span>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        rating_html = '<span class="score">⭐</span><span class="count">(평가 없음)</span>'
                     
-                    # 칼로리
-                    st.markdown(f'<div class="menu-calories">🔥 {menu["칼로리"]}kcal</div>', unsafe_allow_html=True)
+                    # 이미지 HTML
+                    if menu.get("이미지"):
+                        image_html = f'<div class="menu-image-container"><img src="{menu["이미지"]}" class="menu-image"></div>'
+                    else:
+                        image_html = '<div class="menu-image-container"><div class="menu-image-placeholder">이미지 없음</div></div>'
                     
-                    # 구성 (고정 높이)
+                    # 구성 HTML
                     if menu['구성']:
                         ingredients_html = '<div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">📋 <strong>구성</strong><br>'
                         for ingredient in filter(None, menu['구성']):
                             ingredients_html += f'<div class="ingredient-item">• {ingredient}</div>'
                         ingredients_html += '</div>'
-                        st.markdown(ingredients_html, unsafe_allow_html=True)
                     else:
-                        st.markdown('<div class="menu-ingredients" style="min-height: 150px; max-height: 150px;">📋 <strong>구성</strong><br><div style="color: #999;">구성 정보 없음</div></div>', unsafe_allow_html=True)
+                        ingredients_html = '<div class="menu-ingredients" style="min-height: 150px; max-height: 150px;">📋 <strong>구성</strong><br><div style="color: #999;">구성 정보 없음</div></div>'
                     
-                    st.markdown('</div>', unsafe_allow_html=True)  # menu-content 종료
+                    # 전체 카드 HTML 생성
+                    card_html = f"""
+                    <div class="menu-card" style="min-height: 750px;">
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 0.8rem;
+                            margin-bottom: 1rem;
+                            padding-bottom: 1rem;
+                            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+                        ">
+                            <div class="menu-corner">{menu['코너']}</div>
+                            <div style="
+                                font-size: 1.2rem;
+                                font-weight: 700;
+                                line-height: 1.3;
+                                text-align: center;
+                                color: #667eea;
+                            ">{menu['메뉴명']}</div>
+                        </div>
+                        
+                        <div class="menu-content">
+                            {image_html}
+                            
+                            <div class="menu-rating-small">
+                                {rating_html}
+                            </div>
+                            
+                            <div class="menu-calories">🔥 {menu["칼로리"]}kcal</div>
+                            
+                            {ingredients_html}
+                        </div>
+                    </div>
+                    """
+                    
+                    st.markdown(card_html, unsafe_allow_html=True)
                     
                     # 투표 버튼
                     votes = load_votes()
@@ -773,8 +760,6 @@ password = "your_password"
                                 save_comments(comments)
                                 st.success("댓글이 작성되었습니다!")
                                 st.rerun()
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
         # 라면 메뉴
         if ramen_menus:
