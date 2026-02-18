@@ -605,10 +605,9 @@ password = "your_password"
 
 
     # 날짜 선택
-    today = datetime.now(KST).date()
     col1, col2 = st.columns([3, 1])
     with col1:
-        selected_date = today
+        selected_date = st.date_input( "📅 날짜 선택", value=datetime.now(KST).date(), max_value=datetime.now(KST).date() + timedelta(days=7) )
 
     # 메뉴 로드
     try:
