@@ -605,9 +605,10 @@ password = "your_password"
 
 
     # 날짜 선택
+    today = datetime.now(KST).date()
     col1, col2 = st.columns([3, 1])
     with col1:
-        selected_date = date
+        selected_date = today
 
     # 메뉴 로드
     try:
