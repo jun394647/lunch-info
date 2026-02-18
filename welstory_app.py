@@ -471,13 +471,6 @@ def display_menu_card(menu_item, show_voting=True):
     """메뉴 카드 표시 (개선된 레이아웃)"""
     st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
-    # 코너 태그만 표시
-    st.markdown(f"""
-    <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(102, 126, 234, 0.2);">
-        <div class="menu-corner">{menu_item['코너']}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
     # 메인 콘텐츠 영역
     st.markdown('<div class="menu-content">', unsafe_allow_html=True)
 
@@ -649,19 +642,22 @@ password = "your_password"
                     <div style="
                         border: 2px solid rgba(102, 126, 234, 0.3);
                         border-radius: 20px;
-                        padding: 1rem;
+                        padding: 1.2rem;
                         margin-bottom: 1rem;
-                        text-align: center;
                         background: rgba(102, 126, 234, 0.05);
-                        min-height: 80px;
+                        min-height: 100px;
                         display: flex;
+                        flex-direction: column;
                         align-items: center;
                         justify-content: center;
+                        gap: 0.8rem;
                     ">
+                        <div class="menu-corner">{menu['코너']}</div>
                         <div style="
                             font-size: 1.1rem;
                             font-weight: 700;
                             line-height: 1.3;
+                            text-align: center;
                             color: #667eea;
                         ">{menu['메뉴명']}</div>
                     </div>
