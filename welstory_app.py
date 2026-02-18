@@ -612,7 +612,7 @@ password = "your_password"
     # 메뉴 로드
     try:
         with st.spinner("메뉴를 불러오는 중..."):
-            menu_date = datetime.combine(selected_date, .min.time())
+            menu_date = datetime.combine(selected_date, datetime.min.time())
             menu_date = KST.localize(menu_date)
             menu_data = st.session_state.api.get_menu(date=menu_date)
 
