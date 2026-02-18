@@ -469,7 +469,7 @@ def save_board_posts(posts):
 
 def display_menu_card(menu_item, show_voting=True):
     """메뉴 카드 표시 (개선된 레이아웃)"""
-    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+    # st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
     # 메인 콘텐츠 영역
     st.markdown('<div class="menu-content">', unsafe_allow_html=True)
@@ -583,7 +583,7 @@ def display_menu_card(menu_item, show_voting=True):
                 st.success("댓글이 작성되었습니다!")
                 st.rerun()
 
-    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
+    # st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
 
 def show_menu_page():
@@ -641,7 +641,7 @@ password = "your_password"
                     # 컨테이너로 카드 생성
                     with st.container():
                         # 카드 시작
-                        st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
+                        # st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
                         
                         # 코너 + 메뉴명
                         st.markdown(f"""
@@ -789,7 +789,7 @@ password = "your_password"
             st.markdown("### 🍜 라면 메뉴")
 
             for menu in ramen_menus:
-                st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+                # st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
                 # 헤더
                 st.markdown(f"""
