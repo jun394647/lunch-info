@@ -471,11 +471,10 @@ def display_menu_card(menu_item, show_voting=True):
     """메뉴 카드 표시 (개선된 레이아웃)"""
     st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
-    # 헤더: 코너 + 메뉴명
+    # 코너 태그만 표시
     st.markdown(f"""
-    <div class="menu-header">
+    <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(102, 126, 234, 0.2);">
         <div class="menu-corner">{menu_item['코너']}</div>
-        <div class="menu-name">{menu_item['메뉴명']}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -641,8 +640,35 @@ password = "your_password"
 
             # 메뉴 개수만큼 컬럼 생성 (최대 4개)
             num_cols = min(len(regular_menus), 4)
+            
+            # 상단 메뉴명 카드
+            cols_title = st.columns(num_cols)
+            for idx, menu in enumerate(regular_menus):
+                with cols_title[idx % num_cols]:
+                    st.markdown(f"""
+                    <div style="
+                        border: 2px solid rgba(102, 126, 234, 0.3);
+                        border-radius: 20px;
+                        padding: 1rem;
+                        margin-bottom: 1rem;
+                        text-align: center;
+                        background: rgba(102, 126, 234, 0.05);
+                        min-height: 80px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <div style="
+                            font-size: 1.1rem;
+                            font-weight: 700;
+                            line-height: 1.3;
+                            color: #667eea;
+                        ">{menu['메뉴명']}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            # 메뉴 카드
             cols = st.columns(num_cols)
-
             for idx, menu in enumerate(regular_menus):
                 with cols[idx % num_cols]:
                     display_menu_card(menu)
