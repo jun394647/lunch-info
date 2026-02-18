@@ -603,6 +603,48 @@ password = "your_password"
         st.markdown("자세한 내용은 사이드바 하단의 '🔧 설정 필요'를 참고하세요.")
         return
 
+
+    # 사이드바
+    with st.sidebar:
+        st.markdown("## 🍽️ BOB SSAFY")
+
+        # 날짜 선택
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            selected_date = st.date_input(
+                "📅 날짜 선택",
+                value=datetime.now(KST).date(),
+                max_value=datetime.now(KST).date() + timedelta(days=7))
+        
+        st.markdown("---")
+
+        # 메뉴 선택
+        page = st.radio(
+            "페이지 선택",
+            ["🍽️ 오늘의 메뉴", "📋 BOB HUB", "📊 통계"],
+            label_visibility="collapsed"
+        )
+
+        st.markdown("---")
+
+        # API 연결 상태 (하단에 간단하게 표시)
+        if st.session_state.logged_in:
+            st.success("✅ 연결됨")
+        else:
+            st.error("❌ 연결 안됨")
+            with st.expander("🔧 설정 필요"):
+                st.markdown("""
+                **Streamlit Secrets 설정:**
+                
+                `.streamlit/secrets.toml` 파일에 계정 정보를 추가하세요:
+                
+                ```toml
+                [welstory]
+                username = "your_username"
+                password = "your_password"
+                ```
+                """)
+
     # # 날짜 선택
     # col1, col2 = st.columns([3, 1])
     # with col1:
@@ -1083,46 +1125,6 @@ def main():
         except Exception as e:
             st.error(f"API 연결 실패: {str(e)}")
 
-    # 사이드바
-    with st.sidebar:
-        st.markdown("## 🍽️ BOB SSAFY")
-
-        # 날짜 선택
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            selected_date = st.date_input(
-                "📅 날짜 선택",
-                value=datetime.now(KST).date(),
-                max_value=datetime.now(KST).date() + timedelta(days=7))
-        
-        st.markdown("---")
-
-        # 메뉴 선택
-        page = st.radio(
-            "페이지 선택",
-            ["🍽️ 오늘의 메뉴", "📋 BOB HUB", "📊 통계"],
-            label_visibility="collapsed"
-        )
-
-        st.markdown("---")
-
-        # API 연결 상태 (하단에 간단하게 표시)
-        if st.session_state.logged_in:
-            st.success("✅ 연결됨")
-        else:
-            st.error("❌ 연결 안됨")
-            with st.expander("🔧 설정 필요"):
-                st.markdown("""
-                **Streamlit Secrets 설정:**
-                
-                `.streamlit/secrets.toml` 파일에 계정 정보를 추가하세요:
-                
-                ```toml
-                [welstory]
-                username = "your_username"
-                password = "your_password"
-                ```
-                """)
 
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
