@@ -469,7 +469,7 @@ def save_board_posts(posts):
 
 def display_menu_card(menu_item, show_voting=True):
     """메뉴 카드 표시 (개선된 레이아웃)"""
-    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+    # st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
     # 메인 콘텐츠 영역
     st.markdown('<div class="menu-content">', unsafe_allow_html=True)
