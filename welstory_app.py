@@ -840,14 +840,15 @@ password = "your_password"
                 #         ingredients_html += '</div>'
                 #         st.markdown(ingredients_html, unsafe_allow_html=True)
                 with col2:
-                    if if ramen_types:
+                    if ramen_types:
                         ramen_list = [ing for ing in ramen_types]
-                        ramen_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in ingredients_list])
+                        ramen_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in ramen_list])
                         st.markdown(f"""
                         <div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
                             📋 <strong>라면 종류</strong><br>
                             {ramen_items}
                         </div>
+                        """, unsafe_allow_html=True)
 
                     if toppings:
                         st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
