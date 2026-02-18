@@ -634,11 +634,11 @@ password = "your_password"
             # 메뉴 개수만큼 컬럼 생성 (최대 4개)
             num_cols = min(len(regular_menus), 4)
             
-            # 상단 메뉴 카드 (모든 정보 포함)
-            cols_title = st.columns(num_cols)
+            # 메뉴 카드
+            cols = st.columns(num_cols)
             for idx, menu in enumerate(regular_menus):
-                with cols_title[idx % num_cols]:
-                    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+                with cols[idx % num_cols]:
+                    st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
                     
                     # 코너 + 메뉴명
                     st.markdown(f"""
@@ -698,13 +698,15 @@ password = "your_password"
                     # 칼로리
                     st.markdown(f'<div class="menu-calories">🔥 {menu["칼로리"]}kcal</div>', unsafe_allow_html=True)
                     
-                    # 구성
+                    # 구성 (고정 높이)
                     if menu['구성']:
-                        ingredients_html = '<div class="menu-ingredients">📋 <strong>구성</strong><br>'
+                        ingredients_html = '<div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">📋 <strong>구성</strong><br>'
                         for ingredient in filter(None, menu['구성']):
                             ingredients_html += f'<div class="ingredient-item">• {ingredient}</div>'
                         ingredients_html += '</div>'
                         st.markdown(ingredients_html, unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="menu-ingredients" style="min-height: 150px; max-height: 150px;">📋 <strong>구성</strong><br><div style="color: #999;">구성 정보 없음</div></div>', unsafe_allow_html=True)
                     
                     st.markdown('</div>', unsafe_allow_html=True)  # menu-content 종료
                     
