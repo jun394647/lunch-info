@@ -469,7 +469,7 @@ def save_board_posts(posts):
 
 def display_menu_card(menu_item, show_voting=True):
     """메뉴 카드 표시 (개선된 레이아웃)"""
-    # st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
 
     # 메인 콘텐츠 영역
     st.markdown('<div class="menu-content">', unsafe_allow_html=True)
@@ -583,7 +583,7 @@ def display_menu_card(menu_item, show_voting=True):
                 st.success("댓글이 작성되었습니다!")
                 st.rerun()
 
-    # st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
+    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
 
 def show_menu_page():
@@ -603,11 +603,14 @@ password = "your_password"
         st.markdown("자세한 내용은 사이드바 하단의 '🔧 설정 필요'를 참고하세요.")
         return
 
-
     # 날짜 선택
     col1, col2 = st.columns([3, 1])
     with col1:
-        selected_date = st.date_input( "📅 날짜 선택", value=datetime.now(KST).date(), max_value=datetime.now(KST).date() + timedelta(days=7) )
+        selected_date = st.date_input(
+            "📅 날짜 선택",
+            value=datetime.now(KST).date(),
+            max_value=datetime.now(KST).date() + timedelta(days=7)
+        )
 
     # 메뉴 로드
     try:
@@ -638,7 +641,7 @@ password = "your_password"
                     # 컨테이너로 카드 생성
                     with st.container():
                         # 카드 시작
-                        # st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
+                        st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
                         
                         # 코너 + 메뉴명
                         st.markdown(f"""
@@ -828,14 +831,6 @@ password = "your_password"
                         </div>
                         """, unsafe_allow_html=True)
 
-                # with col2:
-                #     if ramen_types:
-                #         st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem;">🍜 라면 종류</div>', unsafe_allow_html=True)
-                #         ingredients_html = '<div class="menu-ingredients">'
-                #         for ramen in ramen_types:
-                #             ingredients_html += f'<div class="ingredient-item">• {ramen}</div>'
-                #         ingredients_html += '</div>'
-                #         st.markdown(ingredients_html, unsafe_allow_html=True)
                 with col2:
                     if ramen_types:
                         ramen_list = [ing for ing in ramen_types]
@@ -848,13 +843,6 @@ password = "your_password"
                         """, unsafe_allow_html=True)
 
                     if toppings:
-                        # st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
-                        # toppings_html = '<div class="menu-ingredients">'
-                        # for topping in toppings:
-                        #     toppings_html += f'<div class="ingredient-item">• {topping}</div>'
-                        # toppings_html += '</div>'
-                        # st.markdown(toppings_html, unsafe_allow_html=True)
-
                         toppings_list = [ing for ing in toppings]
                         toppings_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in toppings_list])
                         st.markdown(f"""
@@ -863,8 +851,6 @@ password = "your_password"
                             {toppings_items}
                         </div>
                         """, unsafe_allow_html=True)
-
-                st.markdown('</div>', unsafe_allow_html=True)
 
     except Exception as e:
         st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
@@ -1079,6 +1065,7 @@ def main():
                     st.session_state.logged_in = True
         except Exception as e:
             st.error(f"API 연결 실패: {str(e)}")
+
     # 사이드바
     with st.sidebar:
         st.markdown("## 🍽️ BOB SSAFY")
@@ -1089,8 +1076,9 @@ def main():
             selected_date = st.date_input(
                 "📅 날짜 선택",
                 value=datetime.now(KST).date(),
-                max_value=datetime.now(KST).date() + timedelta(days=7))
-        
+                max_value=datetime.now(KST).date() + timedelta(days=7)
+            )
+
         st.markdown("---")
 
         # 메뉴 선택
@@ -1119,7 +1107,6 @@ def main():
                 password = "your_password"
                 ```
                 """)
-
 
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
