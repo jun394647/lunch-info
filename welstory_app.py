@@ -603,14 +603,14 @@ password = "your_password"
         st.markdown("자세한 내용은 사이드바 하단의 '🔧 설정 필요'를 참고하세요.")
         return
 
-    # 날짜 선택
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        selected_date = st.date_input(
-            "📅 날짜 선택",
-            value=datetime.now(KST).date(),
-            max_value=datetime.now(KST).date() + timedelta(days=7)
-        )
+    # # 날짜 선택
+    # col1, col2 = st.columns([3, 1])
+    # with col1:
+    #     selected_date = st.date_input(
+    #         "📅 날짜 선택",
+    #         value=datetime.now(KST).date(),
+    #         max_value=datetime.now(KST).date() + timedelta(days=7)
+    #     )
 
     # 메뉴 로드
     try:
@@ -1086,6 +1086,15 @@ def main():
     # 사이드바
     with st.sidebar:
         st.markdown("## 🍽️ BOB SSAFY")
+
+        # 날짜 선택
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            selected_date = st.date_input(
+                "📅 날짜 선택",
+                value=datetime.now(KST).date(),
+                max_value=datetime.now(KST).date() + timedelta(days=7))
+        
         st.markdown("---")
 
         # 메뉴 선택
