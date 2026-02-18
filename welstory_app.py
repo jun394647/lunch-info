@@ -634,27 +634,26 @@ password = "your_password"
             # 메뉴 개수만큼 컬럼 생성 (최대 4개)
             num_cols = min(len(regular_menus), 4)
             
-            # 상단 메뉴명 카드
+            # 상단 메뉴 카드 (모든 정보 포함)
             cols_title = st.columns(num_cols)
             for idx, menu in enumerate(regular_menus):
                 with cols_title[idx % num_cols]:
+                    st.markdown('<div class="menu-card">', unsafe_allow_html=True)
+                    
+                    # 코너 + 메뉴명
                     st.markdown(f"""
                     <div style="
-                        border: 2px solid rgba(102, 126, 234, 0.3);
-                        border-radius: 20px;
-                        padding: 1.2rem;
-                        margin-bottom: 1rem;
-                        background: rgba(102, 126, 234, 0.05);
-                        min-height: 100px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        justify-content: center;
                         gap: 0.8rem;
+                        margin-bottom: 1rem;
+                        padding-bottom: 1rem;
+                        border-bottom: 2px solid rgba(102, 126, 234, 0.2);
                     ">
                         <div class="menu-corner">{menu['코너']}</div>
                         <div style="
-                            font-size: 1.1rem;
+                            font-size: 1.2rem;
                             font-weight: 700;
                             line-height: 1.3;
                             text-align: center;
@@ -662,12 +661,118 @@ password = "your_password"
                         ">{menu['메뉴명']}</div>
                     </div>
                     """, unsafe_allow_html=True)
-            
-            # 메뉴 카드
-            cols = st.columns(num_cols)
-            for idx, menu in enumerate(regular_menus):
-                with cols[idx % num_cols]:
-                    display_menu_card(menu)
+                    
+                    # 메인 콘텐츠
+                    st.markdown('<div class="menu-content">', unsafe_allow_html=True)
+                    
+                    # 이미지
+                    if menu.get("이미지"):
+                        st.markdown(f"""
+                        <div class="menu-image-container">
+                            <img src="{menu["이미지"]}" class="menu-image">
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div class="menu-image-container">
+                            <div class="menu-image-placeholder">이미지 없음</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # 평점
+                    if menu.get('평균평점', 0) > 0:
+                        st.markdown(f"""
+                        <div class="menu-rating-small">
+                            <span class="score">⭐ {menu['평균평점']:.1f}</span>
+                            <span class="count">({menu['참여자수']}명)</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div class="menu-rating-small">
+                            <span class="score">⭐</span>
+                            <span class="count">(평가 없음)</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # 칼로리
+                    st.markdown(f'<div class="menu-calories">🔥 {menu["칼로리"]}kcal</div>', unsafe_allow_html=True)
+                    
+                    # 구성
+                    if menu['구성']:
+                        ingredients_html = '<div class="menu-ingredients">📋 <strong>구성</strong><br>'
+                        for ingredient in filter(None, menu['구성']):
+                            ingredients_html += f'<div class="ingredient-item">• {ingredient}</div>'
+                        ingredients_html += '</div>'
+                        st.markdown(ingredients_html, unsafe_allow_html=True)
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)  # menu-content 종료
+                    
+                    # 투표 버튼
+                    votes = load_votes()
+                    menu_id = menu['menu_id']
+                    current_votes = votes.get(menu_id, {"좋아요": 0, "별로": 0})
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        if st.button(f"👍 {current_votes['좋아요']}", key=f"like_{menu_id}", use_container_width=True):
+                            current_votes['좋아요'] += 1
+                            votes[menu_id] = current_votes
+                            save_votes(votes)
+                            st.rerun()
+                    
+                    with col2:
+                        if st.button(f"👎 {current_votes['별로']}", key=f"dislike_{menu_id}", use_container_width=True):
+                            current_votes['별로'] += 1
+                            votes[menu_id] = current_votes
+                            save_votes(votes)
+                            st.rerun()
+                    
+                    # 댓글 섹션
+                    with st.expander("💬 댓글 보기/작성"):
+                        comments = load_comments()
+                        menu_comments = comments.get(menu_id, [])
+                        
+                        # 댓글 표시
+                        if menu_comments:
+                            for comment in menu_comments:
+                                st.markdown(f"""
+                                <div class="comment-box">
+                                    <div>
+                                        <span class="comment-author">{comment['author']}</span>
+                                        <span style="color: #999; font-size: 0.85rem;">· {comment['timestamp']}</span>
+                                    </div>
+                                    <div style="margin-top: 0.5rem;">{comment['text']}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
+                        else:
+                            st.info("첫 댓글을 남겨보세요!")
+                        
+                        # 댓글 작성
+                        with st.form(key=f"comment_{menu_id}"):
+                            c_col1, c_col2 = st.columns([1, 3])
+                            with c_col1:
+                                author = st.text_input("이름", key=f"author_{menu_id}", placeholder="익명")
+                            with c_col2:
+                                comment_text = st.text_input("댓글", key=f"text_{menu_id}", placeholder="이 메뉴 어떠셨나요?")
+                            
+                            submit = st.form_submit_button("작성", use_container_width=True)
+                            
+                            if submit and comment_text:
+                                if menu_id not in comments:
+                                    comments[menu_id] = []
+                                
+                                comments[menu_id].append({
+                                    "author": author if author else "익명",
+                                    "text": comment_text,
+                                    "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+                                })
+                                save_comments(comments)
+                                st.success("댓글이 작성되었습니다!")
+                                st.rerun()
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
         # 라면 메뉴
         if ramen_menus:
