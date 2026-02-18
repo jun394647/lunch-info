@@ -5,7 +5,15 @@ import pytz
 import json
 import os
 from pathlib import Path
+hide_streamlit_style = """
+<style>
+[data-testid="stAppToolbar"] {display: none;}
+[data-testid="stHeader"] {display: none;}
+footer {display: none;}
+</style>
+"""
 
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # 페이지 설정
 st.set_page_config(
     page_title="BOB SSAFY",
