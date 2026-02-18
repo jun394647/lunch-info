@@ -851,12 +851,21 @@ password = "your_password"
                         """, unsafe_allow_html=True)
 
                     if toppings:
-                        st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
-                        toppings_html = '<div class="menu-ingredients">'
-                        for topping in toppings:
-                            toppings_html += f'<div class="ingredient-item">• {topping}</div>'
-                        toppings_html += '</div>'
-                        st.markdown(toppings_html, unsafe_allow_html=True)
+                        # st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
+                        # toppings_html = '<div class="menu-ingredients">'
+                        # for topping in toppings:
+                        #     toppings_html += f'<div class="ingredient-item">• {topping}</div>'
+                        # toppings_html += '</div>'
+                        # st.markdown(toppings_html, unsafe_allow_html=True)
+
+                        toppings_list = [ing for ing in toppings]
+                        toppings_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in toppings_list])
+                        st.markdown(f"""
+                        <div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                            📋 <strong>🥚 토핑</strong><br>
+                            {toppings_items}
+                        </div>
+                        """, unsafe_allow_html=True)
 
                 st.markdown('</div>', unsafe_allow_html=True)
 
