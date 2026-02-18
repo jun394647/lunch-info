@@ -588,7 +588,7 @@ def display_menu_card(menu_item, show_voting=True):
 
 def show_menu_page():
     """BOB SSAFY 메뉴 페이지"""
-    st.markdown('<p class="main-header">🍽️ BOB SSAFY 점심 메뉴</p>', unsafe_allow_html=True)
+    # st.markdown('<p class="main-header">🍽️ BOB SSAFY 점심 메뉴</p>', unsafe_allow_html=True)
 
     # API 연결 확인
     if 'api' not in st.session_state or st.session_state.api is None:
