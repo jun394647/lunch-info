@@ -583,7 +583,7 @@ def display_menu_card(menu_item, show_voting=True):
                 st.success("댓글이 작성되었습니다!")
                 st.rerun()
 
-    st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
+    # st.markdown('</div>', unsafe_allow_html=True)  # menu-card 종료
 
 
 def show_menu_page():
@@ -641,7 +641,7 @@ password = "your_password"
                     # 컨테이너로 카드 생성
                     with st.container():
                         # 카드 시작
-                        st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
+                        # st.markdown('<div class="menu-card" style="min-height: 750px;">', unsafe_allow_html=True)
                         
                         # 코너 + 메뉴명
                         st.markdown(f"""
@@ -831,14 +831,23 @@ password = "your_password"
                         </div>
                         """, unsafe_allow_html=True)
 
+                # with col2:
+                #     if ramen_types:
+                #         st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem;">🍜 라면 종류</div>', unsafe_allow_html=True)
+                #         ingredients_html = '<div class="menu-ingredients">'
+                #         for ramen in ramen_types:
+                #             ingredients_html += f'<div class="ingredient-item">• {ramen}</div>'
+                #         ingredients_html += '</div>'
+                #         st.markdown(ingredients_html, unsafe_allow_html=True)
                 with col2:
-                    if ramen_types:
-                        st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem;">🍜 라면 종류</div>', unsafe_allow_html=True)
-                        ingredients_html = '<div class="menu-ingredients">'
-                        for ramen in ramen_types:
-                            ingredients_html += f'<div class="ingredient-item">• {ramen}</div>'
-                        ingredients_html += '</div>'
-                        st.markdown(ingredients_html, unsafe_allow_html=True)
+                    if if ramen_types:
+                        ramen_list = [ing for ing in ramen_types]
+                        ramen_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in ingredients_list])
+                        st.markdown(f"""
+                        <div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                            📋 <strong>라면 종류</strong><br>
+                            {ramen_items}
+                        </div>
 
                     if toppings:
                         st.markdown('<div style="font-weight: bold; margin-bottom: 0.5rem; margin-top: 1rem;">🥚 토핑</div>', unsafe_allow_html=True)
