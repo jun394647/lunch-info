@@ -1118,6 +1118,44 @@ def main():
                 ```
                 """)
 
+        google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSdAkULzHhKYs8vQPmiHotxzpWluN6zvAkqS3gv-zV5pG85d9Q/viewform?usp=publish-editor" 
+
+        st.markdown(f"""
+            <div style="
+                background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+                padding: 1.2rem;
+                border-radius: 15px;
+                border: 1px dashed #FF4B2B;
+                margin-top: 2rem;
+            ">
+                <h4 style="color: #FF4B2B; margin-top: 0;">📢 광고/제휴 모집</h4>
+                <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">
+                    BOB SSAFY와 함께할<br>
+                    파트너를 찾고 있습니다.<br><br>
+                    <strong>대상:</strong> 주변 식당, 카페 등<br>
+                    <strong>문의:</strong> ssafy_bob@example.com
+                </p>
+                <a href="{google_form_url}" target="_blank" style="text-decoration: none;">
+                    <div style="
+                        background: #FF4B2B;
+                        color: white;
+                        text-align: center;
+                        padding: 0.6rem;
+                        border-radius: 8px;
+                        font-size: 0.85rem;
+                        font-weight: bold;
+                        transition: background 0.3s;
+                    ">
+                        제안서 보내기
+                    </div>
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
+        # ------------------------------
+
+        st.divider()
+        st.caption("© 2026 BOB SSAFY Team")
+
     # 메인 페이지
     if page == "🍽️ 오늘의 메뉴":
         show_menu_page()
