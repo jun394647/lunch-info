@@ -1132,8 +1132,8 @@ def main():
                 <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">
                     BOB SSAFY와 함께할<br>
                     파트너를 찾고 있습니다.<br><br>
-                    <strong>대상:</strong> 주변 식당, 카페 등<br>
-                    <strong>문의:</strong> ssafy_bob@example.com
+                    <strong>대상:</strong> 주변 카페, 부자 등<br>
+                    <strong>문의:</strong> jun394647@gmail.com
                 </p>
                 <a href="{google_form_url}" target="_blank" style="text-decoration: none;">
                     <div style="
