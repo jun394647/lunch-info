@@ -809,9 +809,6 @@ password = "your_password"
                     </div>
                     """, unsafe_allow_html=True)
 
-        except Exception as e:
-            st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
-
         # 라면 메뉴
         if ramen_menus:
             st.markdown("---")
@@ -878,6 +875,8 @@ password = "your_password"
                             {toppings_items}
                         </div>
                         """, unsafe_allow_html=True)
+    except Exception as e:
+        st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
 
 
 def show_board_page():
