@@ -801,9 +801,8 @@ password = "your_password"
                 
                 with ecol2:
                     st.markdown(f"""
-                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 1px">
                         <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['메뉴명']}</div>
-                        <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
                         <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
                     </div>
                     """, unsafe_allow_html=True)
