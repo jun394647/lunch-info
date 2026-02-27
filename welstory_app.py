@@ -611,7 +611,7 @@ password = "your_password"
 
     # 메뉴 로드
     try:
-        with st.spinner("메뉴를 불러오는 중..."):
+        with st.spinner("메뉴를 불러오는 중... 추가 배식대 가져오는 중... 🚚🚚💦💦💦💦💦💦"):
             menu_date = datetime.combine(selected_date, datetime.min.time())
             menu_date = KST.localize(menu_date)
             menu_data = st.session_state.api.get_menu(date=menu_date)
@@ -848,7 +848,7 @@ password = "your_password"
         extra = menu_data.get("추가배식대")
         if extra:
             st.markdown("---")
-            st.markdown("### ➕ 오늘 품절 시 추가 배식대")
+            st.markdown("### ➕ 추가 배식대")
             
             with st.container():
                 ecol1, ecol2 = st.columns([1, 2])
