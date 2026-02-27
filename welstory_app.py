@@ -800,14 +800,26 @@ password = "your_password"
                         """, unsafe_allow_html=True)
                 
                 with ecol2:
-                    st.markdown(f"""
-                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
-                        <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
-                        <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
-                        <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
-                        <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    eecol1, eecol2 = st.colums([1, 2])
+                    with eecol1:
+                        st.markdown(f"""
+                        <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
+                            <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
+                            <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
+                            <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
+                            <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with eecol2:
+                        st.markdown(f"""
+                        <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
+                            <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
+                            <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
+                            <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
+                            <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
 
         # 라면 메뉴
         if ramen_menus:
