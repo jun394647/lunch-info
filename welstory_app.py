@@ -777,6 +777,41 @@ password = "your_password"
                                 st.success("댓글이 작성되었습니다!")
                                 st.rerun()
 
+        # 추가 배식대 표시 (맨 밑)
+        extra = menu_data.get("추가배식대")
+        if extra:
+            st.markdown("---")
+            st.markdown("### ➕ 추가 배식대")
+            
+            with st.container():
+                ecol1, ecol2 = st.columns([1, 2])
+                with ecol1:
+                    if extra.get("이미지"):
+                        st.markdown(f"""
+                        <div class="menu-image-container" style="height: 200px;">
+                            <img src="{extra["이미지"]}" class="menu-image">
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div class="menu-image-container" style="height: 200px;">
+                            <div class="menu-image-placeholder">이미지 없음</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                with ecol2:
+                    st.markdown(f"""
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
+                        <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
+                        <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
+                        <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
+                        <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
+
         # 라면 메뉴
         if ramen_menus:
             st.markdown("---")
@@ -843,41 +878,6 @@ password = "your_password"
                             {toppings_items}
                         </div>
                         """, unsafe_allow_html=True)
-                        
-        # 추가 배식대 표시 (맨 밑)
-        extra = menu_data.get("추가배식대")
-        if extra:
-            st.markdown("---")
-            st.markdown("### ➕ 추가 배식대")
-            
-            with st.container():
-                ecol1, ecol2 = st.columns([1, 2])
-                with ecol1:
-                    if extra.get("이미지"):
-                        st.markdown(f"""
-                        <div class="menu-image-container" style="height: 200px;">
-                            <img src="{extra["이미지"]}" class="menu-image">
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div class="menu-image-container" style="height: 200px;">
-                            <div class="menu-image-placeholder">이미지 없음</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                with ecol2:
-                    st.markdown(f"""
-                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
-                        <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
-                        <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
-                        <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
-                        <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-    except Exception as e:
-        st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
 
 
 def show_board_page():
