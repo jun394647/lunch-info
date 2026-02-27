@@ -735,4 +735,449 @@ password = "your_password"
                             st.rerun()
                     
                     # 댓글 섹션
-                    with st.expander("💬 댓글
+                    with st.expander("💬 댓글 보기/작성"):
+                        comments = load_comments()
+                        menu_comments = comments.get(menu_id, [])
+                        
+                        # 댓글 표시
+                        if menu_comments:
+                            for comment in menu_comments:
+                                st.markdown(f"""
+                                <div class="comment-box">
+                                    <div>
+                                        <span class="comment-author">{comment['author']}</span>
+                                        <span style="color: #999; font-size: 0.85rem;">· {comment['timestamp']}</span>
+                                    </div>
+                                    <div style="margin-top: 0.5rem;">{comment['text']}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
+                        else:
+                            st.info("첫 댓글을 남겨보세요!")
+                        
+                        # 댓글 작성
+                        with st.form(key=f"comment_{menu_id}"):
+                            c_col1, c_col2 = st.columns([1, 3])
+                            with c_col1:
+                                author = st.text_input("이름", key=f"author_{menu_id}", placeholder="익명")
+                            with c_col2:
+                                comment_text = st.text_input("댓글", key=f"text_{menu_id}", placeholder="이 메뉴 어떠셨나요?")
+                            
+                            submit = st.form_submit_button("작성", use_container_width=True)
+                            
+                            if submit and comment_text:
+                                if menu_id not in comments:
+                                    comments[menu_id] = []
+                                
+                                comments[menu_id].append({
+                                    "author": author if author else "익명",
+                                    "text": comment_text,
+                                    "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+                                })
+                                save_comments(comments)
+                                st.success("댓글이 작성되었습니다!")
+                                st.rerun()
+
+        # 라면 메뉴
+        if ramen_menus:
+            st.markdown("---")
+            st.markdown("### 🍜 라면 메뉴")
+
+            for menu in ramen_menus:
+                # 헤더
+                st.markdown(f"""
+                <div class="menu-header">
+                    <div class="menu-corner">{menu['코너']}</div>
+                    <div class="menu-name">{menu['메뉴명']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # 라면 종류와 토핑 분리
+                ramen_types = []
+                toppings = []
+                topping_idx = -1
+
+                for i, item in enumerate(menu.get("구성", [])):
+                    if "[토핑" in item:
+                        topping_idx = i
+                        break
+
+                if topping_idx > 0:
+                    ramen_types = menu["구성"][1:topping_idx]
+                    toppings = menu["구성"][topping_idx+1:]
+                else:
+                    ramen_types = menu["구성"][1:] if len(menu["구성"]) > 1 else []
+
+                col1, col2 = st.columns([1, 2])
+
+                with col1:
+                    if menu.get("이미지"):
+                        st.markdown(f"""
+                        <div class="menu-image-container" style="height: 250px;">
+                            <img src="{menu["이미지"]}" class="menu-image">
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div class="menu-image-container" style="height: 250px;">
+                            <div class="menu-image-placeholder">이미지 없음</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                with col2:
+                    if ramen_types:
+                        ramen_list = [ing for ing in ramen_types]
+                        ramen_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in ramen_list])
+                        st.markdown(f"""
+                        <div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                            📋 <strong>라면 종류</strong><br>
+                            {ramen_items}
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                    if toppings:
+                        toppings_list = [ing for ing in toppings]
+                        toppings_items = ''.join([f'<div class="ingredient-item">• {ing}</div>' for ing in toppings_list])
+                        st.markdown(f"""
+                        <div class="menu-ingredients" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                            📋 <strong>🥚 토핑</strong><br>
+                            {toppings_items}
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+        # 추가 배식대 표시 (맨 밑)
+        extra = menu_data.get("추가배식대")
+        if extra:
+            st.markdown("---")
+            st.markdown("### ➕ 오늘 품절 시 추가 배식대")
+            
+            with st.container():
+                ecol1, ecol2 = st.columns([1, 2])
+                with ecol1:
+                    if extra.get("이미지"):
+                        st.markdown(f"""
+                        <div class="menu-image-container" style="height: 200px;">
+                            <img src="{extra["이미지"]}" class="menu-image">
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div class="menu-image-container" style="height: 200px;">
+                            <div class="menu-image-placeholder">이미지 없음</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                with ecol2:
+                    st.markdown(f"""
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px dashed #667eea;">
+                        <div class="menu-corner" style="background: #FF6B35; margin-bottom: 10px;">{extra['코너']}</div>
+                        <h4 style="margin: 0.5rem 0;">{extra['메뉴명']}</h4>
+                        <div style="color: #667eea; font-weight: bold; margin-bottom: 1rem;">🔥 {extra['칼로리']}kcal</div>
+                        <div style="font-size: 0.9rem; color: #555;">📋 <strong>구성:</strong> {' / '.join(filter(None, extra['구성']))}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"메뉴 로드 중 오류 발생: {str(e)}")
+
+
+def show_board_page():
+    """게시판 페이지"""
+    st.markdown('<p class="main-header">📋 BOB HUB</p>', unsafe_allow_html=True)
+
+    posts = load_board_posts()
+
+    # 글쓰기 버튼
+    col1, col2 = st.columns([3, 1])
+    with col2:
+        write_mode = st.button("✍️ 새 글 작성", use_container_width=True, type="primary")
+
+    # 글쓰기 모드
+    if write_mode or 'writing' in st.session_state and st.session_state.writing:
+        st.session_state.writing = True
+
+        with st.form("new_post", clear_on_submit=True):
+            st.markdown("### ✍️ 새 글 작성")
+            title = st.text_input("제목", placeholder="제목을 입력하세요")
+            author = st.text_input("작성자", placeholder="익명")
+            content = st.text_area("내용", height=200, placeholder="내용을 입력하세요")
+
+            col1, col2 = st.columns([1, 5])
+            with col1:
+                submit = st.form_submit_button("작성", use_container_width=True)
+            with col2:
+                cancel = st.form_submit_button("취소", use_container_width=True)
+
+            if cancel:
+                st.session_state.writing = False
+                st.rerun()
+
+            if submit and title and content:
+                new_post = {
+                    "id": len(posts),
+                    "title": title,
+                    "author": author if author else "익명",
+                    "content": content,
+                    "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M"),
+                    "comments": []
+                }
+                posts.insert(0, new_post)
+                save_board_posts(posts)
+                st.session_state.writing = False
+                st.success("게시글이 작성되었습니다!")
+                st.rerun()
+
+    # 게시글 목록
+    st.markdown("---")
+    if not posts:
+        st.info("아직 작성된 글이 없습니다. 첫 글을 작성해보세요!")
+    else:
+        for post in posts:
+            with st.expander(f"**{post['title']}** · {post['author']} · {post['timestamp']}", expanded=False):
+                st.markdown(f'<div class="board-post">{post["content"]}</div>', unsafe_allow_html=True)
+
+                st.markdown("---")
+                st.markdown("### 💬 댓글")
+
+                # 댓글 표시
+                if post.get('comments'):
+                    for comment in post['comments']:
+                        st.markdown(f"""
+                        <div class="comment-box">
+                            <strong style="color: #667eea;">{comment['author']}</strong>
+                            <span style="font-size: 0.75rem; color: #999;"> · {comment['timestamp']}</span><br>
+                            <span style="font-size: 0.9rem;">{comment['text']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.caption("첫 댓글을 남겨보세요!")
+
+                # 댓글 작성
+                with st.form(f"comment_post_{post['id']}"):
+                    c_col1, c_col2 = st.columns([1, 4])
+                    with c_col1:
+                        c_author = st.text_input("이름", key=f"c_author_{post['id']}", placeholder="익명")
+                    with c_col2:
+                        c_text = st.text_input("댓글", key=f"c_text_{post['id']}", placeholder="댓글을 입력하세요")
+
+                    c_submit = st.form_submit_button("댓글 작성", use_container_width=True)
+
+                    if c_submit and c_text:
+                        if 'comments' not in post:
+                            post['comments'] = []
+
+                        post['comments'].append({
+                            "author": c_author if c_author else "익명",
+                            "text": c_text,
+                            "timestamp": datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+                        })
+                        save_board_posts(posts)
+                        st.success("댓글이 작성되었습니다!")
+                        st.rerun()
+
+
+def show_stats_page():
+    """통계 페이지"""
+    st.markdown('<p class="main-header">📊 메뉴 통계</p>', unsafe_allow_html=True)
+
+    votes = load_votes()
+
+    if not votes:
+        st.info("아직 투표 데이터가 없습니다.")
+        return
+
+    # 전체 통계 카드
+    total_likes = sum(v['좋아요'] for v in votes.values())
+    total_dislikes = sum(v['별로'] for v in votes.values())
+    total_votes = total_likes + total_dislikes
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👍</div>
+            <div style="font-size: 2.5rem; font-weight: bold;">{total_likes}</div>
+            <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.3rem;">총 좋아요</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👎</div>
+            <div style="font-size: 2.5rem; font-weight: bold;">{total_dislikes}</div>
+            <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.3rem;">총 별로</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+            <div style="font-size: 2.5rem; font-weight: bold;">{total_votes}</div>
+            <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.3rem;">총 투표수</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # 인기 메뉴 TOP 5
+    st.markdown("### 🏆 인기 메뉴 TOP 5")
+
+    menu_scores = []
+    for menu_id, vote_data in votes.items():
+        total = vote_data['좋아요'] + vote_data['별로']
+        if total > 0:
+            score = vote_data['좋아요'] / total * 100
+            menu_scores.append({
+                "메뉴": menu_id.split('_')[-1] if '_' in menu_id else menu_id,
+                "좋아요": vote_data['좋아요'],
+                "별로": vote_data['별로'],
+                "좋아요율": score,
+                "총투표": total
+            })
+
+    menu_scores.sort(key=lambda x: x['좋아요율'], reverse=True)
+
+    if menu_scores:
+        for idx, menu in enumerate(menu_scores[:5], 1):
+            # 메달 이모지
+            medal = "🥇" if idx == 1 else "🥈" if idx == 2 else "🥉" if idx == 3 else f"{idx}."
+
+            # 진행 바 생성
+            progress_html = f"""
+            <div style="background: white; border-radius: 10px; padding: 1rem; margin: 0.8rem 0; border: 1px solid #e0e0e0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <div>
+                        <span style="font-size: 1.3rem; margin-right: 0.5rem;">{medal}</span>
+                        <strong style="font-size: 1.1rem;">{menu['메뉴']}</strong>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1.2rem; font-weight: bold; color: #667eea;">{menu['좋아요율']:.1f}%</span>
+                    </div>
+                </div>
+                <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: {menu['좋아요율']:.1f}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.85rem; color: #666;">
+                    <span>👍 {menu['좋아요']} · 👎 {menu['별로']}</span>
+                    <span>총 {menu['총투표']}표</span>
+                </div>
+            </div>
+            """
+            st.markdown(progress_html, unsafe_allow_html=True)
+    else:
+        st.info("투표 데이터가 없습니다.")
+
+
+def main():
+    # 계정 정보 가져오기 (Streamlit Secrets에서)
+    credentials = get_welstory_credentials()
+
+    # 세션 상태 초기화
+    if 'api' not in st.session_state:
+        st.session_state.api = None
+        st.session_state.logged_in = False
+
+    # 자동 로그인 (페이지 로드 시 한 번만)
+    if not st.session_state.logged_in and credentials.get('username') and credentials.get('password'):
+        try:
+            with st.spinner("BOB SSAFY 불러오는 중..."):
+                api = WelplusAPI()
+                if api.login(credentials['username'], credentials['password']):
+                    st.session_state.api = api
+                    st.session_state.logged_in = True
+        except Exception as e:
+            st.error(f"API 연결 실패: {str(e)}")
+
+    # 사이드바
+    with st.sidebar:
+        st.markdown("## 🍽️ BOB SSAFY")
+
+        # 날짜 선택
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            selected_date = st.date_input(
+                "📅 날짜 선택",
+                value=datetime.now(KST).date(),
+                max_value=datetime.now(KST).date() + timedelta(days=7)
+            )
+
+        st.markdown("---")
+
+        # 메뉴 선택
+        page = st.radio(
+            "페이지 선택",
+            ["🍽️ 오늘의 메뉴", "📋 BOB HUB", "📊 통계"],
+            label_visibility="collapsed"
+        )
+
+        st.markdown("---")
+
+        # API 연결 상태 (하단에 간단하게 표시)
+        if st.session_state.logged_in:
+            st.success("✅ 연결됨")
+        else:
+            st.error("❌ 연결 안됨")
+            with st.expander("🔧 설정 필요"):
+                st.markdown("""
+                **Streamlit Secrets 설정:**
+                
+                `.streamlit/secrets.toml` 파일에 계정 정보를 추가하세요:
+                
+                ```toml
+                [welstory]
+                username = "your_username"
+                password = "your_password"
+                ```
+                """)
+
+        google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSdAkULzHhKYs8vQPmiHotxzpWluN6zvAkqS3gv-zV5pG85d9Q/viewform?usp=publish-editor" 
+
+        st.markdown(f"""
+            <div style="
+                background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+                padding: 1.2rem;
+                border-radius: 15px;
+                border: 1px dashed #FF4B2B;
+                margin-top: 2rem;
+            ">
+                <h4 style="color: #FF4B2B; margin-top: 0;">📢 광고/제휴 모집</h4>
+                <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">
+                    BOB SSAFY와 함께할<br>
+                    파트너를 찾고 있습니다.<br><br>
+                    <strong>대상:</strong> 주변 카페, 부자 등<br>
+                    <strong>문의:</strong> jun394647@gmail.com
+                </p>
+                <a href="{google_form_url}" target="_blank" style="text-decoration: none;">
+                    <div style="
+                        background: #FF4B2B;
+                        color: white;
+                        text-align: center;
+                        padding: 0.6rem;
+                        border-radius: 8px;
+                        font-size: 0.85rem;
+                        font-weight: bold;
+                        transition: background 0.3s;
+                    ">
+                        제안서 보내기
+                    </div>
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
+        # ------------------------------
+
+        st.divider()
+        st.caption("© 2026 BOB SSAFY Team")
+
+    # 메인 페이지
+    if page == "🍽️ 오늘의 메뉴":
+        show_menu_page()
+    elif page == "📋 BOB HUB":
+        show_board_page()
+    elif page == "📊 통계":
+        show_stats_page()
+
+
+if __name__ == "__main__":
+    main()
