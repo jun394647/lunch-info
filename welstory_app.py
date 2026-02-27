@@ -203,7 +203,7 @@ class WelplusAPI:
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
             return self._parse_menu(response.json(), menu_dt)
-        return {"점심": [], "추가배식대": []}
+        return {"점심": [], "추가 배식대": []}
 
     def get_menu_rating(self, menu_dt, hall_no, menu_course_type, menu_meal_type, restaurant_code):
         if not self.token: return {"평균평점": 0, "참여자수": 0}
@@ -223,7 +223,7 @@ class WelplusAPI:
         return {"평균평점": 0, "참여자수": 0}
 
     def _parse_menu(self, menu_data, menu_dt):
-        """메뉴 데이터 파싱 (메인/추가배식대 분류 로직 수정)"""
+        """메뉴 데이터 파싱 (메인/추가 배식대 분류 로직 수정)"""
         try:
             menu_items = []
             extra_items = []
@@ -259,10 +259,10 @@ class WelplusAPI:
                 else:
                     menu_items.append(info)
 
-            return {"점심": menu_items, "추가배식대": extra_items}
+            return {"점심": menu_items, "추가 배식대": extra_items}
         except Exception as e:
             st.error(f"메뉴 파싱 오류: {str(e)}")
-            return {"점심": [], "추가배식대": []}
+            return {"점심": [], "추가 배식대": []}
 
 # --- 데이터 저장/로드 함수 (유지) ---
 def get_welstory_credentials():
@@ -365,7 +365,7 @@ def show_menu_page():
             menu_date = KST.localize(datetime.combine(selected_date, datetime.min.time()))
             data = st.session_state.api.get_menu(date=menu_date)
 
-        if not data["점심"] and not data["추가배식대"]:
+        if not data["점심"] and not data["추가 배식대"]:
             st.warning("메뉴가 없습니다.")
             return
 
@@ -388,10 +388,10 @@ def show_menu_page():
                     st.caption(", ".join(filter(None, r['구성'])))
 
         # 3. 추가 배식대 (신규 섹션)
-        if data["추가배식대"]:
+        if data["추가 배식대"]:
             st.markdown("---")
             st.markdown("### 🥗 추가 배식대 (SELF)")
-            for extra in data["추가배식대"]:
+            for extra in data["추가 배식대"]:
                 with st.expander(f"➕ {extra['코너']} : {extra['메뉴명']}"):
                     ec1, ec2 = st.columns([1, 2])
                     if extra['이미지']: ec1.image(extra['이미지'])
